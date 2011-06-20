@@ -25,7 +25,7 @@ This WSGI component should perform multiple jobs:
 - validate incoming basic claims
 - perform all basic auth interactions with clients
 - collect and forward identity information from the authentication process
-    such as user name, groups, etc...
+    such as user name, roles, etc...
 
 This is an Auth component as per: http://wiki.openstack.org/openstack-authn
 
@@ -119,14 +119,12 @@ class AuthProtocol(object):
                                               proxy_headers, env)
 
             # TODO(Ziad): add additional details we may need,
-            #             like tenant and group info
+            #             like tenant and role info
             _decorate_request_headers('X_AUTHORIZATION', "Proxy %s" % user,
                                       proxy_headers, env)
             _decorate_request_headers("X_IDENTITY_STATUS", "Confirmed",
                                       proxy_headers, env)
             _decorate_request_headers('X_TENANT', 'blank',
-                                      proxy_headers, env)
-            _decorate_request_headers('X_GROUP', 'Blank',
                                       proxy_headers, env)
 
             #Auth processed, headers added now decide how to pass on the call

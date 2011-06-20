@@ -32,7 +32,7 @@ This WSGI component should perform multiple jobs:
 - validate incoming openid claims
 - perform all openid interactions with clients
 - collect and forward identity information from the openid authentication
-    such as user name, groups, etc...
+    such as user name, roles, etc...
 
 This is an Auth component as per: http://wiki.openstack.org/openstack-authn
 """

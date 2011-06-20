@@ -1,1 +1,5 @@
-import baseurl, group, role, tenant_group, tenant, token, user
+import baseurl
+import role
+import tenant
+import token
+import user

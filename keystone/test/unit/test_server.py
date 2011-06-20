@@ -24,7 +24,7 @@ class TestServer(unittest.TestCase):
     def setUp(self):
         environ = {'wsgi.url_scheme': 'http'} 
         self.request = Request(environ)
-        self.auth_data = auth.AuthData(auth.Token(date.today(), "2231312"), auth.User("username", "12345", auth.Groups([], [])))
+        self.auth_data = auth.AuthData(auth.Token(date.today(), "2231312"), auth.User("username", "12345"))
         
     #def tearDown(self):
     

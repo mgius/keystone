@@ -29,9 +29,6 @@ documents the APIs to call and how to use them.
     <td>Role</td><td>A responsibility which is linked to a given user (and optionally scoped to a particular tenant).</td>
   </tr>
   <tr>
-    <td>Group</td><td>A group of users. Group use cases are not yet defined in Keystone.</td>
-  </tr>
-  <tr>
     <td>Token</td><td>A 'token' describes a temporary object obtained by clients from Keystone and used to identify themselves to an OpenStack service.</td>
   </tr>
 </table>

@@ -50,7 +50,6 @@
 
     <complexType name="User">
         <sequence>
-            <element name="groups" type="identity:Groups" />
             <element name="roleRefs" type="identity:RoleRefList" />
             <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
         </sequence>
@@ -59,20 +58,6 @@
         <anyAttribute namespace="##other" processContents="lax"/>
     </complexType>
 
-    <complexType name="Groups">
-        <sequence>
-            <element name="group" type="identity:Group" maxOccurs="1000"/>
-            <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
-        </sequence>
-        <anyAttribute namespace="##other" processContents="lax"/>
-    </complexType>
-    
-    <complexType name="Group">
-        <attribute name="id" type="xsd:string" use="required"/>
-        <attribute name="tenantId" type="xsd:string"  use="optional"/>
-        <anyAttribute namespace="##other" processContents="lax"/>
-    </complexType>
-    
     <complexType name="ServiceCatalog">
         <sequence>
             <element name="service" type="identity:Service" minOccurs="1" maxOccurs="unbounded">

@@ -73,7 +73,5 @@ class KeystoneAuthShim(wsgi.Middleware):
         if not self.auth.is_project_member(user_id, project_id):
             self.auth.add_to_project(user_id, project_id)
 
-        # groups = req.headers['X_GROUP']
-
         req.environ['nova.context'] = context.RequestContext(user_ref, project_ref)
         return self.application

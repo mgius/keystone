@@ -25,29 +25,6 @@ def get_all(session=None):
     return result
 
 
-def get_by_group(user_id, group_id, session=None):
-    if not session:
-        session = get_session()
-    result = session.query(models.UserGroupAssociation).filter_by(\
-            group_id=group_id, user_id=user_id).first()
-    return result
-
-
-def tenant_group(values):
-    user_ref = models.UserGroupAssociation()
-    user_ref.update(values)
-    user_ref.save()
-    return user_ref
-
-
-def tenant_group_delete(id, group_id, session=None):
-    if not session:
-        session = get_session()
-    with session.begin():
-        usertenantgroup_ref = get_by_group(id, group_id, session)
-        session.delete(usertenantgroup_ref)
-
-
 def create(values):
     user_ref = models.User()
     check_and_use_hashed_password(values)
@@ -65,8 +42,6 @@ def get(id, session=None):
     if not session:
         session = get_session()
     #TODO(Ziad): finish cleaning up model
-    #    result = session.query(models.User).options(joinedload('groups')).\
-    #              options(joinedload('tenants')).filter_by(id=id).first()
     result = session.query(models.User).filter_by(id=id).first()
     return result
 
@@ -129,14 +104,6 @@ def get_by_email(email, session=None):
     return result
 
 
-def get_groups(id, session=None):
-    if not session:
-        session = get_session()
-    result = session.query(models.Group).filter_by(\
-            user_id=id)
-    return result
-
-
 def user_roles_by_tenant(user_id, tenant_id, session=None):
     if not session:
         session = get_session()
@@ -153,71 +120,6 @@ def update(id, values, session=None):
         check_and_use_hashed_password(values)
         user_ref.update(values)
         user_ref.save(session=session)
-
-
-def users_tenant_group_get_page(group_id, marker, limit, session=None):
-    if not session:
-        session = get_session()
-    uga = aliased(models.UserGroupAssociation)
-    user = aliased(models.User)
-    if marker:
-        return session.query(user, uga).join(\
-                            (uga, uga.user_id == user.id)).\
-                            filter(uga.group_id == group_id).\
-                            filter("id>=:marker").params(\
-                            marker='%s' % marker).order_by(\
-                            user.id).limit(limit).all()
-    else:
-        return session.query(user, uga).\
-                            join((uga, uga.user_id == user.id)).\
-                            filter(uga.group_id == group_id).order_by(\
-                            user.id).limit(limit).all()
-
-
-def users_tenant_group_get_page_markers(group_id, marker, limit, session=None):
-    if not session:
-        session = get_session()
-    uga = aliased(models.UserGroupAssociation)
-    user = aliased(models.User)
-    first = session.query(models.User).order_by(\
-                        models.User.id).first()
-    last = session.query(models.User).order_by(\
-                        models.User.id.desc()).first()
-    if first is None:
-        return (None, None)
-    if marker is None:
-        marker = first.id
-    next = session.query(user).join(
-                            (uga, uga.user_id == user.id)).\
-                            filter(uga.group_id == group_id).\
-                            filter("id > :marker").params(\
-                            marker='%s' % marker).order_by(\
-                            user.id).limit(limit).all()
-    prev = session.query(user).join(\
-                            (uga, uga.user_id == user.id)).\
-                            filter(uga.group_id == group_id).\
-                            filter("id < :marker").params(\
-                            marker='%s' % marker).order_by(\
-                            user.id.desc()).limit(int(limit)).all()
-    if len(next) == 0:
-        next = last
-    else:
-        for t in next:
-            next = t
-    if len(prev) == 0:
-        prev = first
-    else:
-        for t in prev:
-            prev = t
-    if prev.id == marker:
-        prev = None
-    else:
-        prev = prev.id
-    if next.id == last.id:
-        next = None
-    else:
-        next = next.id
-    return (prev, next)
 
 
 def delete(id, session=None):
@@ -246,13 +148,6 @@ def get_by_tenant(id, tenant_id, session=None):
         return None
 
 
-def get_group_by_tenant(id, session=None):
-    if not session:
-        session = get_session()
-    user_group = session.query(models.Group).filter_by(tenant_id=id).all()
-    return user_group
-
-
 def delete_tenant_user(id, tenant_id, session=None):
     if not session:
         session = get_session()
@@ -261,16 +156,6 @@ def delete_tenant_user(id, tenant_id, session=None):
         if users_tenant_ref is not None:
             for user_tenant_ref in users_tenant_ref:
                 session.delete(user_tenant_ref)
-
-        user_group_ref = get_group_by_tenant(tenant_id, session)
-
-        if user_group_ref is not None:
-            for user_group in user_group_ref:
-                get_users = session.query(models.UserGroupAssociation)\
-                                .filter_by(user_id=id,
-                                        group_id=user_group.id).all()
-                for group_user in get_users:
-                    session.delete(group_user)
 
 
 def users_get_by_tenant(user_id, tenant_id, session=None):
@@ -418,12 +303,3 @@ def users_get_by_tenant_get_page_markers(tenant_id, marker, limit, \
         next = next.id
     return (prev, next)
 
-def user_groups_get_all(user_id, session=None):
-    if not session:
-        session = get_session()
-    uga = aliased(models.UserGroupAssociation)
-    group = aliased(models.Group)
-    return session.query(group, uga).\
-                            join((uga, uga.group_id == group.id)).\
-                            filter(uga.user_id == user_id).order_by(
-                            group.id).all()

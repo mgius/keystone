@@ -28,7 +28,6 @@ Concepts
 
    users
    tenants
-   groups
    roles
 
 Using Keystone

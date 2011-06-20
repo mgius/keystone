@@ -49,16 +49,6 @@
 ./keystone-manage $* baseURLs add RegionOne cdn http://cdn.publicinternets.com/v1.1/%tenant_id% http://cdn.admin-nets.local/v1.1/%tenant_id% http://127.0.0.1:7777/v1.1/%tenant_id% 1
 ./keystone-manage $* baseURLs add RegionOne keystone http://keystone.publicinternets.com/v2.0 http://127.0.0.1:8081/v2.0 http://127.0.0.1:8080/v2.0 1
 
-# Groups
-#./keystone-manage $* group add Admin 1234
-#./keystone-manage $* group add Default 1234
-#./keystone-manage $* group add Empty 0000
-
-# User Group Associations
-#./keystone-manage $* user joeuser join Default
-#./keystone-manage $* user disabled join Default
-#./keystone-manage $* user admin join Admin
-
 # Tokens
 ./keystone-manage $* token add 887665443383838 joeuser 1234 2012-02-05T00:00
 ./keystone-manage $* token add 999888777666 admin 1234 2015-02-05T00:00
