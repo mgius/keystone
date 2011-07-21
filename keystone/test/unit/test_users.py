@@ -315,24 +315,6 @@ class GetUserTest(UserTest):
         self.assertEqual(404, resp_val)
         self.assertEqual('application/xml', utils.content_type(resp))
 
-    def test_a_user_get_disabled_user(self):
-        utils.create_user(self.tenant, self.user, str(self.auth_token))
-        resp, content = utils.user_get_json(self.userdisabled,
-                                            str(self.auth_token))
-        resp_val = int(resp['status'])
-        utils.handle_user_resp(self, content, resp_val,
-                                utils.content_type(resp))
-        self.assertEqual(403, resp_val)
-
-    def test_a_user_get_disabled_user_xml(self):
-        utils.create_user(self.tenant, self.user, str(self.auth_token))
-        resp, content = utils.user_get_xml(self.userdisabled,
-                                            str(self.auth_token))
-        resp_val = int(resp['status'])
-        utils.handle_user_resp(self, content, resp_val,
-                                utils.content_type(resp))
-        self.assertEqual(403, resp_val)
-        self.assertEqual('application/xml', utils.content_type(resp))
 '''
     def test_a_user_get_disabled_tenant(self):
         utils.create_user('0000', self.user, str(self.auth_token))
@@ -839,31 +821,6 @@ class UpdateUserTest(UserTest):
         self.assertEqual(200, resp_val)
         self.assertEqual('updatedjoeuser@openstack.org',
                           content.get("email"))
-        self.assertEqual('application/xml', utils.content_type(resp))
-
-    def test_user_update_user_disabled(self):
-        utils.create_user(self.tenant, self.user, str(self.auth_token))
-        resp, content = utils.user_update_json(self.auth_token,
-                                               self.userdisabled)
-        resp_val = int(resp['status'])
-        content = json.loads(content)
-        if resp_val == 500:
-            self.fail('Identity Fault')
-        elif resp_val == 503:
-            self.fail('Service Not Available')
-        self.assertEqual(403, resp_val)
-
-    def test_user_update_user_disabled_xml(self):
-        utils.create_user(self.tenant, self.user, str(self.auth_token))
-        resp, content = utils.user_update_xml(self.auth_token,
-                                              self.userdisabled)
-        resp_val = int(resp['status'])
-        content = etree.fromstring(content)
-        if resp_val == 500:
-            self.fail('Identity Fault')
-        elif resp_val == 503:
-            self.fail('Service Not Available')
-        self.assertEqual(403, resp_val)
         self.assertEqual('application/xml', utils.content_type(resp))
 
     def test_user_update_email_conflict(self):
